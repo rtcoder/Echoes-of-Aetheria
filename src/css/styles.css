@@ -1,0 +1,16 @@
+@import "touch-controls.css";
+
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100dvh;
+    width: 100vw;
+    background: #000;
+    overflow: hidden;
+}
+
+canvas {
+    background: #333;
+}

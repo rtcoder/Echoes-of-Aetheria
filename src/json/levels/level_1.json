@@ -1,0 +1,16 @@
+{
+  "name": "Level 1",
+  "startPoint": {
+    "x": 30,
+    "y": 30
+  },
+  "size": {
+    "width": 1000,
+    "height": 1000
+  },
+  "walls": [
+    { "x": 0, "y": 0, "width": 1000, "height": 30 },
+    { "x": 0, "y": 110, "width": 1000, "height": 30 },
+    { "x": 0, "y": 0, "width": 30, "height": 1000 }
+  ]
+}

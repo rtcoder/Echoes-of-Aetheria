@@ -1,5 +1,5 @@
-import {canvas} from './elements.js';
 import {detectCollision} from './collisions.js';
+import {canvas} from './elements.js';
 import {Game} from './game.js';
 import {Keys} from './keys.js';
 
@@ -22,6 +22,8 @@ export function updatePlayerPosition() {
 
     player.x += player.dx;
     player.y += player.dy;
+    player.dx = 0;
+    player.dy = 0;
 
     if (player.x < 0) {
         player.x = 0;

@@ -1,13 +1,12 @@
 import {detectCollision} from './collisions.js';
 import {canvas} from './elements.js';
-import {Game} from './game.js';
+import {Game, PlayerMoveDirection} from './game.js';
 import {Keys} from './keys.js';
 
 export function updatePlayerPosition() {
-    const {player, level,gravity} = Game;
+    const {player, level} = Game;
     const oldX = player.x;
     const oldY = player.y;
-
 
     updatePlayerCoordinateByKeys();
     preventPlayerLeaveCanvas();
@@ -31,8 +30,9 @@ export function updatePlayerPosition() {
 
     updateCanvasShift();
 }
+
 export function updatePlayerPositionOnPlatforms() {
-    const {player, level,gravity} = Game;
+    const {player, level, gravity} = Game;
     updatePlayerCoordinateByKeys();
     player.velocityY += gravity;
     player.y += player.velocityY;
@@ -50,8 +50,8 @@ export function updatePlayerPositionOnPlatforms() {
     });
 
     // Sprawdzanie kolizji z ziemią
-    if (player.y + player.height +Game.canvasShift.y> canvas.height) {
-        player.y = canvas.height - player.height-Game.canvasShift.y;
+    if (player.y + player.height + Game.canvasShift.y > canvas.height) {
+        player.y = canvas.height - player.height - Game.canvasShift.y;
         player.velocityY = 0;
         player.onGround = true;
     }
@@ -64,21 +64,47 @@ export function updatePlayerPositionOnPlatforms() {
 function updatePlayerCoordinateByKeys() {
     const {player} = Game;
 
-    if (Keys['ArrowUp'] || Keys['w']) {
+    if (Keys.ArrowUp || Keys.KeyW) {
         player.dy = -player.speed;
+        player.moveDirection = PlayerMoveDirection.Up;
     }
-    if (Keys['ArrowDown'] || Keys['s']) {
+    if (Keys.ArrowDown || Keys.KeyS) {
         player.dy = player.speed;
+        player.moveDirection = PlayerMoveDirection.Down;
     }
-    if (Keys['ArrowLeft'] || Keys['a']) {
+    if (Keys.ArrowLeft || Keys.KeyA) {
         player.dx = -player.speed;
+        player.moveDirection = PlayerMoveDirection.Left;
     }
-    if (Keys['ArrowRight'] || Keys['d']) {
+    if (Keys.ArrowRight || Keys.KeyD) {
         player.dx = player.speed;
+        player.moveDirection = PlayerMoveDirection.Right;
     }
-
-    if (Keys['Space'] && player.onGround) {
-        console.log('dd')
+    if (player.dx < 0 && player.dy < 0) {
+        if (player.dx > player.dy) {
+            player.moveDirection = PlayerMoveDirection.Up;
+        } else {
+            player.moveDirection = PlayerMoveDirection.Left;
+        }
+    }
+    if (player.dx > 0 && player.dy > 0) {
+        if (player.dx > player.dy) {
+            player.moveDirection = PlayerMoveDirection.Right;
+        } else {
+            player.moveDirection = PlayerMoveDirection.Down;
+        }
+    }
+    // Aktualizacja klatek animacji
+    if (player.dx !== 0 || player.dy !== 0) {
+        player.animationCounter++;
+        if (player.animationCounter >= player.animationDelay) {
+            player.frame = (player.frame + 1) % player.frameCount;
+            player.animationCounter = 0;
+        }
+    } else {
+        player.frame = 0; // Reset animacji, gdy gracz się nie porusza
+    }
+    if (Keys.Space && player.onGround) {
         player.velocityY = player.jumpPower;
     }
 

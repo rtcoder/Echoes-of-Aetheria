@@ -5,11 +5,14 @@ import {Game} from './game.js';
 export function drawPlayer() {
     ctx.fillStyle = 'white';
     const {player, canvasShift, gameFieldTop} = Game;
-    ctx.fillRect(
+    const spriteSheet = Assets.img.player.walk[player.moveDirection];
+    const sprite = spriteSheet[player.frame];
+    ctx.drawImage(
+        sprite,
         player.x + canvasShift.x,
         player.y + canvasShift.y + gameFieldTop,
-        player.size,
-        player.size,
+        sprite.width,
+        sprite.height,
     );
 }
 

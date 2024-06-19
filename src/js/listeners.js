@@ -12,4 +12,5 @@ export function setListeners() {
 joystick.addEventListener('touchstart', handleJoystickStart, false);
 joystick.addEventListener('touchmove', handleJoystickMove, false);
 joystick.addEventListener('touchend', handleJoystickEnd, false);
+joystick.addEventListener('touchcancel', handleJoystickEnd, false);
 // actionButton.addEventListener('touchstart', handleActionButton, false);

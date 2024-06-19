@@ -43,6 +43,7 @@
  * @property {number} maxLives - Maksymalna liczba żyć gracza.
  * @property {number} dx - Prędkość ruchu gracza w osi x.
  * @property {number} dy - Prędkość ruchu gracza w osi y.
+ * @property {string} moveDirection - Prędkość ruchu gracza w osi y.
  */
 
 /**
@@ -63,6 +64,13 @@
  * @property {CanvasShift} canvasShift - Przesunięcie płótna.
  */
 
+export const PlayerMoveDirection = {
+    Up: 'up',
+    Down: 'down',
+    Left: 'left',
+    Right: 'right',
+};
+
 /** @type {Game} */
 export const Game = {
     level: null,
@@ -70,9 +78,9 @@ export const Game = {
     gameFieldTop: 100,
     gravity: 0.5,
     player: {
-        size: 40,
-        width: 40,
-        height: 40,
+        size: 50,
+        width: 50,
+        height: 50,
         x: 0,
         y: 0,
         speed: 5,
@@ -83,6 +91,11 @@ export const Game = {
         velocityY: 0,
         jumpPower: -10,
         onGround: false,
+        moveDirection:PlayerMoveDirection.Up,
+        frame: 0,
+        frameCount: 9, // Liczba klatek w animacji
+        animationDelay: 5, // Liczba klatek czasu między przełączeniem sprite'a
+        animationCounter: 0,
     },
     canvasShift: {
         x: 0,

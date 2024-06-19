@@ -44,14 +44,11 @@ export function detectCollision(player, walls) {
             let minCollision = Math.min(bottomCollision, topCollision, leftCollision, rightCollision);
             if (minCollision === bottomCollision) {
                 collision.top = true;
-            }
-            if (minCollision === topCollision) {
+            }else if (minCollision === topCollision) {
                 collision.bottom = true;
-            }
-            if (minCollision === leftCollision) {
+            }else if (minCollision === leftCollision) {
                 collision.right = true;
-            }
-            if (minCollision === rightCollision) {
+            }else if (minCollision === rightCollision) {
                 collision.left = true;
             }
         }

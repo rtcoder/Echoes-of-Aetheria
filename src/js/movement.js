@@ -4,39 +4,13 @@ import {Game} from './game.js';
 import {Keys} from './keys.js';
 
 export function updatePlayerPosition() {
-    const {player, canvasShift, level, gameFieldTop} = Game;
+    const {player, level,gravity} = Game;
     const oldX = player.x;
     const oldY = player.y;
-    if (Keys['ArrowUp'] || Keys['w']) {
-        player.dy = -player.speed;
-    }
-    if (Keys['ArrowDown'] || Keys['s']) {
-        player.dy = player.speed;
-    }
-    if (Keys['ArrowLeft'] || Keys['a']) {
-        player.dx = -player.speed;
-    }
-    if (Keys['ArrowRight'] || Keys['d']) {
-        player.dx = player.speed;
-    }
 
-    player.x += player.dx;
-    player.y += player.dy;
-    player.dx = 0;
-    player.dy = 0;
 
-    if (player.x < 0) {
-        player.x = 0;
-    }
-    if (player.y < 0) {
-        player.y = 0;
-    }
-    if (player.x + player.size + canvasShift.x > canvas.width) {
-        player.x = canvas.width - player.size - canvasShift.x;
-    }
-    if (player.y + player.size + canvasShift.y > canvas.height - gameFieldTop) {
-        player.y = canvas.height - gameFieldTop - player.size - canvasShift.y;
-    }
+    updatePlayerCoordinateByKeys();
+    preventPlayerLeaveCanvas();
 
     const collisionResult = detectCollision(
         player,
@@ -54,13 +28,95 @@ export function updatePlayerPosition() {
     if (collisionResult.right) {
         player.x = oldX;
     }
-    const halfCanvasWidth = canvas.width / 2;
-    const halfCanvasHeight = canvas.height / 2;
+
+    updateCanvasShift();
+}
+export function updatePlayerPositionOnPlatforms() {
+    const {player, level,gravity} = Game;
+    updatePlayerCoordinateByKeys();
+    player.velocityY += gravity;
+    player.y += player.velocityY;
+
+    player.onGround = false;
+    level.walls.forEach(platform => {
+        if (player.x < platform.x + platform.width &&
+            player.x + player.width > platform.x &&
+            player.y < platform.y + platform.height &&
+            player.y + player.height > platform.y) {
+            player.velocityY = 0;
+            player.y = platform.y - player.height;
+            player.onGround = true;
+        }
+    });
+
+    // Sprawdzanie kolizji z ziemią
+    if (player.y + player.height +Game.canvasShift.y> canvas.height) {
+        player.y = canvas.height - player.height-Game.canvasShift.y;
+        player.velocityY = 0;
+        player.onGround = true;
+    }
+
+    preventPlayerLeaveCanvas();
+
+    updateCanvasShift();
+}
+
+function updatePlayerCoordinateByKeys() {
+    const {player} = Game;
+
+    if (Keys['ArrowUp'] || Keys['w']) {
+        player.dy = -player.speed;
+    }
+    if (Keys['ArrowDown'] || Keys['s']) {
+        player.dy = player.speed;
+    }
+    if (Keys['ArrowLeft'] || Keys['a']) {
+        player.dx = -player.speed;
+    }
+    if (Keys['ArrowRight'] || Keys['d']) {
+        player.dx = player.speed;
+    }
+
+    if (Keys['Space'] && player.onGround) {
+        console.log('dd')
+        player.velocityY = player.jumpPower;
+    }
+
+    player.x += player.dx;
+    player.y += player.dy;
+    player.dx = 0;
+    player.dy = 0;
+}
+
+function preventPlayerLeaveCanvas() {
+    const {player, canvasShift, gameFieldTop} = Game;
+    if (player.x < 0) {
+        player.x = 0;
+    }
+    if (player.y < 0) {
+        player.y = 0;
+    }
+    const cWidth = canvas.width;
+    const cHeight = canvas.height;
+    if (player.x + player.size + canvasShift.x > cWidth) {
+        player.x = cWidth - player.size - canvasShift.x;
+    }
+    if (player.y + player.size + canvasShift.y > cHeight - gameFieldTop) {
+        player.y = cHeight - gameFieldTop - player.size - canvasShift.y;
+    }
+}
+
+function updateCanvasShift() {
+    const {player, canvasShift, level} = Game;
+    const cWidth = canvas.width;
+    const cHeight = canvas.height;
+    const halfCanvasWidth = (cWidth / 2);
+    const halfCanvasHeight = (cHeight / 2);
 
     canvasShift.y = 0;
     if (player.y >= halfCanvasHeight) {
         canvasShift.y = halfCanvasHeight - player.y;
-        const maxCanvasShift = level.size.height - halfCanvasHeight;
+        const maxCanvasShift = level.size.height - cHeight;
         if (canvasShift.y <= -maxCanvasShift) {
             canvasShift.y = -maxCanvasShift;
         }
@@ -69,7 +125,7 @@ export function updatePlayerPosition() {
     canvasShift.x = 0;
     if (player.x >= halfCanvasWidth) {
         canvasShift.x = halfCanvasWidth - player.x;
-        const maxCanvasShift = level.size.width - halfCanvasWidth;
+        const maxCanvasShift = (level.size.width) - cWidth;
         if (canvasShift.x <= -maxCanvasShift) {
             canvasShift.x = -maxCanvasShift;
         }

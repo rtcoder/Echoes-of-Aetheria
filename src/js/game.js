@@ -34,6 +34,8 @@
  * Reprezentuje gracza w grze.
  * @typedef {Object} Player
  * @property {number} size - Rozmiar gracza.
+ * @property {number} width - Rozmiar gracza.
+ * @property {number} height - Rozmiar gracza.
  * @property {number} x - Współrzędna x pozycji gracza.
  * @property {number} y - Współrzędna y pozycji gracza.
  * @property {number} speed - Prędkość poruszania się gracza.
@@ -56,6 +58,7 @@
  * @property {Level|null} level - Aktualny poziom gry.
  * @property {number|null} currentLevel - Aktualny poziom gry.
  * @property {number} gameFieldTop - Pozycja górnej granicy pola gry.
+ * @property {number} gravity - Siła grawitacji.
  * @property {Player} player - Obiekt gracza.
  * @property {CanvasShift} canvasShift - Przesunięcie płótna.
  */
@@ -65,8 +68,11 @@ export const Game = {
     level: null,
     currentLevel: null,
     gameFieldTop: 100,
+    gravity: 0.5,
     player: {
         size: 40,
+        width: 40,
+        height: 40,
         x: 0,
         y: 0,
         speed: 5,
@@ -74,6 +80,9 @@ export const Game = {
         maxLives: 5,
         dx: 0,
         dy: 0,
+        velocityY: 0,
+        jumpPower: -10,
+        onGround: false,
     },
     canvasShift: {
         x: 0,

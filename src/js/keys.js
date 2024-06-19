@@ -1,8 +1,9 @@
 export const Keys = {};
 
 export function keydown(e){
-    Keys[e.key] = true;
+    Keys[e.code] = true;
 }
 export function keyup(e){
-    Keys[e.key] = false;
+    console.log(e)
+    Keys[e.code] = false;
 }

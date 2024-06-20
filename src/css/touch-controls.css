@@ -38,7 +38,10 @@
     bottom: 20px;
     width: 70px;
     height: 70px;
-    background: rgba(255, 0, 0, 0.5);
+    background: rgba(255, 255, 255, 0.5);
     border-radius: 50%;
     touch-action: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

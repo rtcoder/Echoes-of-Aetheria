@@ -6,6 +6,10 @@ export const Assets = {
     img: {
         heart_full: new Image(),
         heart_empty: new Image(),
+        sword: {
+            red: new Image(),
+            blue: new Image(),
+        },
         player: {
             walk: {
                 up: {

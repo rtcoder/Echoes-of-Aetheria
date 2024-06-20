@@ -124,11 +124,11 @@ function preventPlayerLeaveCanvas() {
     }
     const cWidth = canvas.width;
     const cHeight = canvas.height;
-    if (player.x + player.size + canvasShift.x > cWidth) {
-        player.x = cWidth - player.size - canvasShift.x;
+    if (player.x + player.width + canvasShift.x > cWidth) {
+        player.x = cWidth - player.width - canvasShift.x;
     }
-    if (player.y + player.size + canvasShift.y > cHeight - gameFieldTop) {
-        player.y = cHeight - gameFieldTop - player.size - canvasShift.y;
+    if (player.y + player.height + canvasShift.y > cHeight - gameFieldTop) {
+        player.y = cHeight - gameFieldTop - player.height - canvasShift.y;
     }
 }
 

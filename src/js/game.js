@@ -33,7 +33,6 @@
 /**
  * Reprezentuje gracza w grze.
  * @typedef {Object} Player
- * @property {number} size - Rozmiar gracza.
  * @property {number} width - Rozmiar gracza.
  * @property {number} height - Rozmiar gracza.
  * @property {number} x - Współrzędna x pozycji gracza.
@@ -78,8 +77,7 @@ export const Game = {
     gameFieldTop: 100,
     gravity: 0.5,
     player: {
-        size: 50,
-        width: 50,
+        width: 30,
         height: 50,
         x: 0,
         y: 0,

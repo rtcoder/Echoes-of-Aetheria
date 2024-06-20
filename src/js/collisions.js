@@ -2,9 +2,9 @@ function checkCollision(player, obstacles) {
     for (const obstacle of obstacles) {
         if (
             player.x < obstacle.x + obstacle.width &&
-            player.x + player.size > obstacle.x &&
+            player.x + player.width > obstacle.x &&
             player.y < obstacle.y + obstacle.height &&
-            player.y + player.size > obstacle.y
+            player.y + player.height > obstacle.y
         ) {
             return true;
         }
@@ -22,13 +22,13 @@ export function detectCollision(player, walls) {
     };
     for (const wall of walls) {
         if (player.x < wall.x + wall.width &&
-            player.x + player.size > wall.x &&
+            player.x + player.width > wall.x &&
             player.y < wall.y + wall.height &&
-            player.y + player.size > wall.y) {
+            player.y + player.height > wall.y) {
 
-            let playerBottom = player.y + player.size;
+            let playerBottom = player.y + player.height;
             let playerTop = player.y;
-            let playerRight = player.x + player.size;
+            let playerRight = player.x + player.width;
             let playerLeft = player.x;
 
             let wallBottom = wall.y + wall.height;

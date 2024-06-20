@@ -1,7 +1,3 @@
-const images = [
-    'heart_full.png',
-    'heart_empty.png',
-];
 export const Assets = {
     img: {
         heart_full: new Image(),
@@ -59,17 +55,19 @@ export const Assets = {
             },
         },
     },
+    audio: {
+        attack: new Audio(),
+    },
 };
 
-
-function getImagePaths(obj, prefix = '') {
+function getMediaPaths(obj, prefix = '') {
     let paths = [];
 
     for (let key in obj) {
-        if (obj[key] instanceof Image) {
-            paths.push({ path: `${prefix}${key}`, image: obj[key] });
+        if (obj[key] instanceof Image || obj[key] instanceof Audio) {
+            paths.push({path: `${prefix}${key}`, asset: obj[key]});
         } else if (typeof obj[key] === 'object') {
-            paths = paths.concat(getImagePaths(obj[key], `${prefix}${key}.`));
+            paths = paths.concat(getMediaPaths(obj[key], `${prefix}${key}.`));
         }
     }
 
@@ -77,29 +75,41 @@ function getImagePaths(obj, prefix = '') {
 }
 
 export function loadAssets() {
-    const imagePaths = getImagePaths(Assets.img);
-    const imagesToLoad = imagePaths.length;
+    const assetsPaths = getMediaPaths(Assets);
+    const mediaToLoad = assetsPaths.length;
 
     return new Promise((resolve, reject) => {
         let loaded = 0;
 
-        const loadFn = () => {
-            loaded++;
-            if (loaded >= imagesToLoad) {
-                resolve();
-            }
+        const loadFn = (path) => {
+            return () => {
+                loaded++;
+                if (loaded >= mediaToLoad) {
+                    resolve();
+                }
+            };
         };
 
-        imagePaths.forEach(({ path, image }) => {
-            const srcPath = './src/assets/img/' + path.replace(/\./g, '/') + '.png';
-            image.src = srcPath;
-            image.onload = loadFn;
-            image.onerror = () => {
-                reject(new Error(`Failed to load image: ${srcPath}`));
+        assetsPaths.forEach(({path, asset}) => {
+            let extension = '';
+            if (asset instanceof Image) {
+                extension = 'png';
+            }
+            if (asset instanceof Audio) {
+                extension = 'wav';
+            }
+            const srcPath = './src/assets/' + path.replace(/\./g, '/') + '.' + extension;
+            asset.src = srcPath;
+            asset.onload = loadFn(path);
+            if (asset instanceof Audio) {
+                asset.oncanplaythrough = loadFn(path);
+            }
+            asset.onerror = () => {
+                reject(new Error(`Failed to load asset: ${srcPath}`));
             };
         });
 
-        if (imagesToLoad === 0) {
+        if (mediaToLoad === 0) {
             resolve();
         }
     });

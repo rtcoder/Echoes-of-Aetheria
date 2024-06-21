@@ -30,15 +30,22 @@
  * @property {Wall[]} walls - Lista ścian na poziomie.
  */
 
+import {Assets} from './assets.js';
+import {drawGame} from './draw.js';
+import {canvas, ctx} from './elements.js';
+import {loadNextLevel} from './level.js';
+import {setListeners} from './listeners.js';
+import {updatePlayerPosition} from './movement.js';
+import {playSound} from './sound.js';
 
 /**
  * Reprezentuje główny obiekt gry.
  * @typedef {Object} Game
  * @property {Level|null} level - Aktualny poziom gry.
  * @property {number|null} currentLevel - Aktualny poziom gry.
+ * @property {boolean} isGameStarted
  * @property {number} gameFieldTop - Pozycja górnej granicy pola gry.
  * @property {number} gravity - Siła grawitacji.
- * @property {Player} player - Obiekt gracza.
  */
 
 export const PlayerMoveDirection = {
@@ -52,8 +59,13 @@ export const PlayerMoveDirection = {
 export const Game = {
     level: null,
     currentLevel: null,
-    gameFieldTop: 100,
+    isGameStarted: false,
+    gameFieldTop: 60,
     gravity: 0.5,
+    showWelcomeScreen: true,
+    sfx: {
+        walkAudioDelay: 12,
+        walkAudioCounter: 12,
     },
 };
 export const CanvasShift = {
@@ -81,3 +93,34 @@ export const Player = {
     animationCounter: 0,
 };
 
+export function saveGameToLocalStorage() {
+
+}
+
+function update() {
+    if (!Game.isGameStarted) {
+        return;
+    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    updatePlayerPosition();
+    // updatePlayerPositionOnPlatforms()
+    drawGame();
+    const {sfx} = Game;
+    if (Player.isWalking && Player.onGround) {
+
+        sfx.walkAudioCounter++;
+        if (sfx.walkAudioCounter >= sfx.walkAudioDelay) {
+            playSound(Assets.audio.step2);
+            sfx.walkAudioCounter = 0;
+        }
+    } else {
+        sfx.walkAudioCounter = sfx.walkAudioDelay - 1;
+    }
+    requestAnimationFrame(update);
+}
+
+export async function startGame() {
+    await loadNextLevel();
+    setListeners();
+    update();
+}

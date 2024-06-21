@@ -30,16 +30,16 @@ export function handleJoystickMove(event) {
         joystickHandle.style.top = `${25 + Math.sin(angle) * maxDistance}px`;
     }
 
-    Game.player.dx = deltaX / maxDistance * Game.player.speed;
-    Game.player.dy = deltaY / maxDistance * Game.player.speed;
+    Player.dx = deltaX / maxDistance * Player.speed;
+    Player.dy = deltaY / maxDistance * Player.speed;
 }
 
 export function handleJoystickEnd() {
     joystickActive = false;
     joystickHandle.style.left = '25px';
     joystickHandle.style.top = '25px';
-    Game.player.dx = 0;
-    Game.player.dy = 0;
+    Player.dx = 0;
+    Player.dy = 0;
 }
 
 function handleActionButton() {

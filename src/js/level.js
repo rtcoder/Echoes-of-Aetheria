@@ -1,9 +1,9 @@
-import {Game} from './game.js';
+import {Game, Player} from './game.js';
 
  async function loadLevel(number) {
     const level = await fetch(`./src/json/levels/level_${number}.json`).then(res => res.json());
-    Game.player.x = level.startPoint.x;
-    Game.player.y = level.startPoint.y;
+    Player.x = level.startPoint.x;
+    Player.y = level.startPoint.y;
     Game.level = level;
     Game.currentLevel = number;
 }

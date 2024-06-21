@@ -1,59 +1,61 @@
+import {Assets} from './assets.js';
 import {detectCollision} from './collisions.js';
 import {canvas} from './elements.js';
-import {Game, PlayerMoveDirection} from './game.js';
+import {CanvasShift, Game, Player, PlayerMoveDirection} from './game.js';
 import {Keys} from './keys.js';
+import {playSound} from './sound.js';
 
 export function updatePlayerPosition() {
-    const {player, level} = Game;
-    const oldX = player.x;
-    const oldY = player.y;
+    const {level} = Game;
+    const oldX = Player.x;
+    const oldY = Player.y;
 
     updatePlayerCoordinateByKeys();
     preventPlayerLeaveCanvas();
 
     const collisionResult = detectCollision(
-        player,
+        Player,
         level.walls,
     );
     if (collisionResult.top) {
-        player.y = oldY;
+        Player.y = oldY;
     }
     if (collisionResult.bottom) {
-        player.y = oldY;
+        Player.y = oldY;
     }
     if (collisionResult.left) {
-        player.x = oldX;
+        Player.x = oldX;
     }
     if (collisionResult.right) {
-        player.x = oldX;
+        Player.x = oldX;
     }
 
     updateCanvasShift();
 }
 
 export function updatePlayerPositionOnPlatforms() {
-    const {player, level, gravity} = Game;
+    const {level, gravity} = Game;
     updatePlayerCoordinateByKeys();
-    player.velocityY += gravity;
-    player.y += player.velocityY;
+    Player.velocityY += gravity;
+    Player.y += Player.velocityY;
 
-    player.onGround = false;
+    Player.onGround = false;
     level.walls.forEach(platform => {
-        if (player.x < platform.x + platform.width &&
-            player.x + player.width > platform.x &&
-            player.y < platform.y + platform.height &&
-            player.y + player.height > platform.y) {
-            player.velocityY = 0;
-            player.y = platform.y - player.height;
-            player.onGround = true;
+        if (Player.x < platform.x + platform.width &&
+            Player.x + Player.width > platform.x &&
+            Player.y < platform.y + platform.height &&
+            Player.y + Player.height > platform.y) {
+            Player.velocityY = 0;
+            Player.y = platform.y - Player.height;
+            Player.onGround = true;
         }
     });
 
     // Sprawdzanie kolizji z ziemią
-    if (player.y + player.height + Game.canvasShift.y > canvas.height) {
-        player.y = canvas.height - player.height - Game.canvasShift.y;
-        player.velocityY = 0;
-        player.onGround = true;
+    if (Player.y + Player.height + CanvasShift.y > canvas.height) {
+        Player.y = canvas.height - Player.height - CanvasShift.y;
+        Player.velocityY = 0;
+        Player.onGround = true;
     }
 
     preventPlayerLeaveCanvas();
@@ -62,98 +64,99 @@ export function updatePlayerPositionOnPlatforms() {
 }
 
 function updatePlayerCoordinateByKeys() {
-    const {player} = Game;
-
     if (Keys.ArrowUp || Keys.KeyW) {
-        player.dy = -player.speed;
-        player.moveDirection = PlayerMoveDirection.Up;
+        Player.dy = -Player.speed;
+        Player.moveDirection = PlayerMoveDirection.Up;
     }
     if (Keys.ArrowDown || Keys.KeyS) {
-        player.dy = player.speed;
-        player.moveDirection = PlayerMoveDirection.Down;
+        Player.dy = Player.speed;
+        Player.moveDirection = PlayerMoveDirection.Down;
     }
     if (Keys.ArrowLeft || Keys.KeyA) {
-        player.dx = -player.speed;
-        player.moveDirection = PlayerMoveDirection.Left;
+        Player.dx = -Player.speed;
+        Player.moveDirection = PlayerMoveDirection.Left;
     }
     if (Keys.ArrowRight || Keys.KeyD) {
-        player.dx = player.speed;
-        player.moveDirection = PlayerMoveDirection.Right;
+        Player.dx = Player.speed;
+        Player.moveDirection = PlayerMoveDirection.Right;
     }
-    if (player.dx < 0 && player.dy < 0) {
-        if (player.dx > player.dy) {
-            player.moveDirection = PlayerMoveDirection.Up;
+    if (Player.dx < 0 && Player.dy < 0) {
+        if (Player.dx > Player.dy) {
+            Player.moveDirection = PlayerMoveDirection.Up;
         } else {
-            player.moveDirection = PlayerMoveDirection.Left;
+            Player.moveDirection = PlayerMoveDirection.Left;
         }
     }
-    if (player.dx > 0 && player.dy > 0) {
-        if (player.dx > player.dy) {
-            player.moveDirection = PlayerMoveDirection.Right;
+    if (Player.dx > 0 && Player.dy > 0) {
+        if (Player.dx > Player.dy) {
+            Player.moveDirection = PlayerMoveDirection.Right;
         } else {
-            player.moveDirection = PlayerMoveDirection.Down;
+            Player.moveDirection = PlayerMoveDirection.Down;
         }
     }
     // Aktualizacja klatek animacji
-    if (player.dx !== 0 || player.dy !== 0) {
-        player.animationCounter++;
-        if (player.animationCounter >= player.animationDelay) {
-            player.frame = (player.frame + 1) % player.frameCount;
-            player.animationCounter = 0;
+    if (Player.dx !== 0 || Player.dy !== 0) {
+        Player.isWalking = true;
+        Player.animationCounter++;
+        if (Player.animationCounter >= Player.animationDelay) {
+            Player.frame = (Player.frame + 1) % Player.frameCount;
+            Player.animationCounter = 0;
         }
     } else {
-        player.frame = 0; // Reset animacji, gdy gracz się nie porusza
+        Player.frame = 0; // Reset animacji, gdy gracz się nie porusza
+        Player.isWalking = false;
     }
-    if (Keys.Space && player.onGround) {
-        player.velocityY = player.jumpPower;
+    if (Keys.Space && Player.onGround) {
+        Player.velocityY = Player.jumpPower;
+        playSound(Assets.audio.jump);
     }
 
-    player.x += player.dx;
-    player.y += player.dy;
-    player.dx = 0;
-    player.dy = 0;
+    Player.x += Player.dx;
+    Player.y += Player.dy;
+    Player.dx = 0;
+    Player.dy = 0;
 }
 
 function preventPlayerLeaveCanvas() {
-    const {player, canvasShift, gameFieldTop} = Game;
-    if (player.x < 0) {
-        player.x = 0;
+    const {gameFieldTop} = Game;
+    if (Player.x < 0) {
+        Player.x = 0;
     }
-    if (player.y < 0) {
-        player.y = 0;
+    if (Player.y < 0) {
+        Player.y = 0;
     }
     const cWidth = canvas.width;
     const cHeight = canvas.height;
-    if (player.x + player.width + canvasShift.x > cWidth) {
-        player.x = cWidth - player.width - canvasShift.x;
+    if (Player.x + Player.width + CanvasShift.x > cWidth) {
+        Player.x = cWidth - Player.width - CanvasShift.x;
     }
-    if (player.y + player.height + canvasShift.y > cHeight - gameFieldTop) {
-        player.y = cHeight - gameFieldTop - player.height - canvasShift.y;
+    if (Player.y + Player.height + CanvasShift.y > cHeight - gameFieldTop) {
+        Player.y = cHeight - gameFieldTop - Player.height - CanvasShift.y;
     }
 }
 
 function updateCanvasShift() {
-    const {player, canvasShift, level} = Game;
+    const {level} = Game;
     const cWidth = canvas.width;
     const cHeight = canvas.height;
     const halfCanvasWidth = (cWidth / 2);
     const halfCanvasHeight = (cHeight / 2);
 
-    canvasShift.y = 0;
-    if (player.y >= halfCanvasHeight) {
-        canvasShift.y = halfCanvasHeight - player.y;
+    CanvasShift.y = 0;
+    if (Player.y >= halfCanvasHeight) {
+        CanvasShift.y = halfCanvasHeight - Player.y;
         const maxCanvasShift = level.size.height - cHeight;
-        if (canvasShift.y <= -maxCanvasShift) {
-            canvasShift.y = -maxCanvasShift;
+        if (CanvasShift.y <= -maxCanvasShift) {
+            CanvasShift.y = -maxCanvasShift;
         }
     }
 
-    canvasShift.x = 0;
-    if (player.x >= halfCanvasWidth) {
-        canvasShift.x = halfCanvasWidth - player.x;
+    CanvasShift.x = 0;
+    if (Player.x >= halfCanvasWidth) {
+        CanvasShift.x = halfCanvasWidth - Player.x;
         const maxCanvasShift = (level.size.width) - cWidth;
-        if (canvasShift.x <= -maxCanvasShift) {
-            canvasShift.x = -maxCanvasShift;
+        if (CanvasShift.x <= -maxCanvasShift) {
+            CanvasShift.x = -maxCanvasShift;
         }
     }
 }

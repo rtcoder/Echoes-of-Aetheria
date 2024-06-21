@@ -16,6 +16,7 @@ function update() {
 
 async function startGame() {
     await loadNextLevel();
+window.onresize = resize;
     resize();
     setListeners();
     update();

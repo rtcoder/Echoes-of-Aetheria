@@ -16,7 +16,7 @@ export function drawPlayer() {
 }
 
 export function drawWalls() {
-    ctx.fillStyle = 'gray';
+    ctx.fillStyle = '#808080';
     const {level, gameFieldTop} = Game;
     level.walls.forEach(wall => {
         ctx.fillRect(
@@ -28,11 +28,22 @@ export function drawWalls() {
     });
 }
 
+export function drawBackground() {
+    ctx.fillStyle = '#808080';
+    const {level, gameFieldTop} = Game;
+    ctx.drawImage(
+        Assets.img.bg.level_1,
+        CanvasShift.x,
+        CanvasShift.y + gameFieldTop,
+        level.size.width,
+        level.size.height,
+    );
+}
+
 export function drawLives() {
-    ctx.clearRect(0, 0, canvas.width, 100);
-    const imgWidth = 64;
-    for (let i = 0; i < Game.player.lives; i++) {
-        ctx.drawImage(Assets.img.heart_full, i * imgWidth, 10, imgWidth, imgWidth);
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, Game.gameFieldTop);
+    const imgWidth = 40;
     const leftPadding = 15;
     for (let i = 0; i < Player.lives; i++) {
         ctx.drawImage(Assets.img.heart_full, i * imgWidth + leftPadding, 10, imgWidth, imgWidth);
@@ -43,7 +54,8 @@ export function drawLives() {
 }
 
 export function drawGame() {
+    drawBackground();
     drawPlayer();
-    drawWalls();
+    // drawWalls();
     drawLives();
 }

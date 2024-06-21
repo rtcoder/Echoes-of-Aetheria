@@ -1,4 +1,5 @@
 @import "touch-controls.css";
+@import "fonts.css";
 
 body {
     margin: 0;
@@ -7,10 +8,8 @@ body {
     align-items: center;
     height: 100dvh;
     width: 100vw;
-    background: #000;
     overflow: hidden;
 }
 
 canvas {
-    background: #333;
 }

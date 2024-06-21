@@ -56,6 +56,11 @@ export const Assets = {
         },
     },
     audio: {
+        step: new Audio(),
+        step1: new Audio(),
+        step2: new Audio(),
+        hit: new Audio(),
+        jump: new Audio(),
         attack: new Audio(),
     },
 };

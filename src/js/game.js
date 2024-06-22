@@ -85,15 +85,16 @@ export const Player = {
     dy: 0,
     velocityY: 0,
     jumpPower: -10,
-    onGround: false,
-    isWalking: false,
-    moveDirection: PlayerMoveDirection.Down,
     frame: 0,
     frameCount: 9, // Liczba klatek w animacji
     animationDelay: 5, // Liczba klatek czasu między przełączeniem sprite'a
     animationCounter: 0,
 };
-
+export const PlayerActionContext={
+    moveDirection: PlayerMoveDirection.Down,
+    onGround: false,
+    isWalking: false,
+}
 export function saveGameToLocalStorage() {
 
 }
@@ -107,7 +108,7 @@ function update() {
     updatePlayerPositionOnPlatforms()
     drawGame();
     const {sfx} = Game;
-    if (Player.isWalking && Player.onGround) {
+    if (PlayerActionContext.isWalking && PlayerActionContext.onGround) {
 
         sfx.walkAudioCounter++;
         if (sfx.walkAudioCounter >= sfx.walkAudioDelay) {

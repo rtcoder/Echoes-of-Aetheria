@@ -1,7 +1,7 @@
 import {Assets} from './assets.js';
 import {detectCollision} from './collisions.js';
 import {canvas} from './elements.js';
-import {CanvasShift, Game, Player, PlayerMoveDirection} from './game.js';
+import {CanvasShift, Game, Player, PlayerActionContext, PlayerMoveDirection} from './game.js';
 import {Keys} from './keys.js';
 import {playSound} from './sound.js';
 
@@ -43,7 +43,7 @@ export function updatePlayerPositionOnPlatforms() {
     Player.velocityY += gravity;
     Player.y += Player.velocityY;
 
-    Player.onGround = false;
+    PlayerActionContext.onGround = false;
     level.walls.forEach(platform => {
         if (Player.x < platform.x + platform.width &&
             Player.x + Player.width > platform.x &&
@@ -53,7 +53,7 @@ export function updatePlayerPositionOnPlatforms() {
             // if (platform.type !== 'ceiling') {
                 Player.velocityY = 0;
                 Player.y = platform.y - Player.height;
-                Player.onGround = true;
+                PlayerActionContext.onGround = true;
             // }
         }
     });
@@ -62,7 +62,7 @@ export function updatePlayerPositionOnPlatforms() {
     if (Player.y + Player.height + CanvasShift.y > canvas.height) {
         Player.y = canvas.height - Player.height - CanvasShift.y;
         Player.velocityY = 0;
-        Player.onGround = true;
+        PlayerActionContext.onGround = true;
     }
 
     preventPlayerLeaveCanvas();
@@ -73,37 +73,37 @@ export function updatePlayerPositionOnPlatforms() {
 function updatePlayerCoordinateByKeys() {
     if (Keys.ArrowUp || Keys.KeyW) {
         Player.dy = -Player.speed;
-        Player.moveDirection = PlayerMoveDirection.Up;
+        PlayerActionContext.moveDirection = PlayerMoveDirection.Up;
     }
     if (Keys.ArrowDown || Keys.KeyS) {
         Player.dy = Player.speed;
-        Player.moveDirection = PlayerMoveDirection.Down;
+        PlayerActionContext.moveDirection = PlayerMoveDirection.Down;
     }
     if (Keys.ArrowLeft || Keys.KeyA) {
         Player.dx = -Player.speed;
-        Player.moveDirection = PlayerMoveDirection.Left;
+        PlayerActionContext.moveDirection = PlayerMoveDirection.Left;
     }
     if (Keys.ArrowRight || Keys.KeyD) {
         Player.dx = Player.speed;
-        Player.moveDirection = PlayerMoveDirection.Right;
+        PlayerActionContext.moveDirection = PlayerMoveDirection.Right;
     }
     if (Player.dx < 0 && Player.dy < 0) {
         if (Player.dx > Player.dy) {
-            Player.moveDirection = PlayerMoveDirection.Up;
+            PlayerActionContext.moveDirection = PlayerMoveDirection.Up;
         } else {
-            Player.moveDirection = PlayerMoveDirection.Left;
+            PlayerActionContext.moveDirection = PlayerMoveDirection.Left;
         }
     }
     if (Player.dx > 0 && Player.dy > 0) {
         if (Player.dx > Player.dy) {
-            Player.moveDirection = PlayerMoveDirection.Right;
+            PlayerActionContext.moveDirection = PlayerMoveDirection.Right;
         } else {
-            Player.moveDirection = PlayerMoveDirection.Down;
+            PlayerActionContext.moveDirection = PlayerMoveDirection.Down;
         }
     }
     // Aktualizacja klatek animacji
     if (Player.dx !== 0 || Player.dy !== 0) {
-        Player.isWalking = true;
+        PlayerActionContext.isWalking = true;
         Player.animationCounter++;
         if (Player.animationCounter >= Player.animationDelay) {
             Player.frame = (Player.frame + 1) % Player.frameCount;
@@ -111,9 +111,9 @@ function updatePlayerCoordinateByKeys() {
         }
     } else {
         Player.frame = 0; // Reset animacji, gdy gracz się nie porusza
-        Player.isWalking = false;
+        PlayerActionContext.isWalking = false;
     }
-    if (Keys.Space && Player.onGround) {
+    if (Keys.Space && PlayerActionContext.onGround) {
         Player.velocityY = Player.jumpPower;
         playSound(Assets.audio.jump);
     }
@@ -126,25 +126,25 @@ function updatePlayerCoordinateByKeys() {
 function updatePlayerCoordinateByKeysOnPlatforms() {
     if (Keys.ArrowLeft || Keys.KeyA) {
         Player.dx = -Player.speed;
-        Player.moveDirection = PlayerMoveDirection.Left;
+        PlayerActionContext.moveDirection = PlayerMoveDirection.Left;
     }
     if (Keys.ArrowRight || Keys.KeyD) {
         Player.dx = Player.speed;
-        Player.moveDirection = PlayerMoveDirection.Right;
+        PlayerActionContext.moveDirection = PlayerMoveDirection.Right;
     }
     if (Player.dx < 0 && Player.dy < 0) {
         if (Player.dx < Player.dy) {
-            Player.moveDirection = PlayerMoveDirection.Left;
+            PlayerActionContext.moveDirection = PlayerMoveDirection.Left;
         }
     }
     if (Player.dx > 0 && Player.dy > 0) {
         if (Player.dx > Player.dy) {
-            Player.moveDirection = PlayerMoveDirection.Right;
+            PlayerActionContext.moveDirection = PlayerMoveDirection.Right;
         }
     }
     // Aktualizacja klatek animacji
     if (Player.dx !== 0 || Player.dy !== 0) {
-        Player.isWalking = true;
+        PlayerActionContext.isWalking = true;
         Player.animationCounter++;
         if (Player.animationCounter >= Player.animationDelay) {
             Player.frame = (Player.frame + 1) % Player.frameCount;
@@ -152,9 +152,9 @@ function updatePlayerCoordinateByKeysOnPlatforms() {
         }
     } else {
         Player.frame = 0; // Reset animacji, gdy gracz się nie porusza
-        Player.isWalking = false;
+        PlayerActionContext.isWalking = false;
     }
-    if (Keys.Space && Player.onGround) {
+    if (Keys.Space && PlayerActionContext.onGround) {
         Player.velocityY = Player.jumpPower;
         playSound(Assets.audio.jump);
     }
@@ -166,15 +166,15 @@ function updatePlayerCoordinateByKeysOnPlatforms() {
 }
 function updatePlayerCoordinateByJoyStickOnPlatforms() {
     if (Player.dx<0) {
-        Player.moveDirection = PlayerMoveDirection.Left;
+        PlayerActionContext.moveDirection = PlayerMoveDirection.Left;
     }
     if (Player.dx>0) {
         Player.dx = Player.speed;
-        Player.moveDirection = PlayerMoveDirection.Right;
+        PlayerActionContext.moveDirection = PlayerMoveDirection.Right;
     }
     // Aktualizacja klatek animacji
     if (Player.dx !== 0 || Player.dy !== 0) {
-        Player.isWalking = true;
+        PlayerActionContext.isWalking = true;
         Player.animationCounter++;
         if (Player.animationCounter >= Player.animationDelay) {
             Player.frame = (Player.frame + 1) % Player.frameCount;
@@ -182,9 +182,9 @@ function updatePlayerCoordinateByJoyStickOnPlatforms() {
         }
     } else {
         Player.frame = 0; // Reset animacji, gdy gracz się nie porusza
-        Player.isWalking = false;
+        PlayerActionContext.isWalking = false;
     }
-    if (Keys.Space && Player.onGround) {
+    if (Keys.Space && PlayerActionContext.onGround) {
         Player.velocityY = Player.jumpPower;
         playSound(Assets.audio.jump);
     }

@@ -1,10 +1,10 @@
 import {Assets} from './assets.js';
 import {canvas, ctx} from './elements.js';
-import {CanvasShift, Game, Player} from './game.js';
+import {CanvasShift, Game, Player, PlayerActionContext} from './game.js';
 
 export function drawPlayer() {
     const {gameFieldTop} = Game;
-    const spriteSheet = Assets.img.player.walk[Player.moveDirection];
+    const spriteSheet = Assets.img.player.walk[PlayerActionContext.moveDirection];
     const sprite = spriteSheet[Player.frame];
     ctx.drawImage(
         sprite,

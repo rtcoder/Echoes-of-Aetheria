@@ -1,4 +1,5 @@
 import {Game, Player} from './game.js';
+import {updateCanvasShift} from './movement.js';
 
  async function loadLevel(number) {
     const level = await fetch(`./src/json/levels/level_${number}.json`).then(res => res.json());
@@ -6,6 +7,7 @@ import {Game, Player} from './game.js';
     Player.y = level.startPoint.y;
     Game.level = level;
     Game.currentLevel = number;
+    updateCanvasShift();
 }
 
 export async function loadNextLevel() {

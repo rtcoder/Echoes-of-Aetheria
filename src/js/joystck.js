@@ -1,5 +1,5 @@
 import {joystick, joystickHandle} from './elements.js';
-import {Game} from './game.js';
+import {Game, Player} from './game.js';
 
 let joystickActive = false;
 let joystickStartX, joystickStartY;
@@ -29,8 +29,8 @@ export function handleJoystickMove(event) {
         joystickHandle.style.left = `${25 + Math.cos(angle) * maxDistance}px`;
         joystickHandle.style.top = `${25 + Math.sin(angle) * maxDistance}px`;
     }
-
-    Player.dx = deltaX / maxDistance * Player.speed;
+const speedX=deltaX / maxDistance * Player.speed
+    Player.dx = speedX>Player.speed?Player.speed:speedX;
     Player.dy = deltaY / maxDistance * Player.speed;
 }
 
@@ -42,7 +42,7 @@ export function handleJoystickEnd() {
     Player.dy = 0;
 }
 
-function handleActionButton() {
+export function handleActionButton() {
     console.log('Action button pressed!');
     // Dodaj tutaj logikę dla akcji gracza
 }

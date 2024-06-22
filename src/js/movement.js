@@ -34,8 +34,12 @@ export function updatePlayerPosition() {
 }
 
 export function updatePlayerPositionOnPlatforms() {
-    const {level, gravity} = Game;
-    updatePlayerCoordinateByKeys();
+    const { level, gravity } = Game;
+    if(Game.isTouchDevice){
+        updatePlayerCoordinateByJoyStickOnPlatforms();
+    }else {
+        updatePlayerCoordinateByKeysOnPlatforms();
+    }
     Player.velocityY += gravity;
     Player.y += Player.velocityY;
 
@@ -45,9 +49,12 @@ export function updatePlayerPositionOnPlatforms() {
             Player.x + Player.width > platform.x &&
             Player.y < platform.y + platform.height &&
             Player.y + Player.height > platform.y) {
-            Player.velocityY = 0;
-            Player.y = platform.y - Player.height;
-            Player.onGround = true;
+            // Sprawdzanie, czy platforma nie jest typem "sufit"
+            // if (platform.type !== 'ceiling') {
+                Player.velocityY = 0;
+                Player.y = platform.y - Player.height;
+                Player.onGround = true;
+            // }
         }
     });
 
@@ -116,6 +123,74 @@ function updatePlayerCoordinateByKeys() {
     Player.dx = 0;
     Player.dy = 0;
 }
+function updatePlayerCoordinateByKeysOnPlatforms() {
+    if (Keys.ArrowLeft || Keys.KeyA) {
+        Player.dx = -Player.speed;
+        Player.moveDirection = PlayerMoveDirection.Left;
+    }
+    if (Keys.ArrowRight || Keys.KeyD) {
+        Player.dx = Player.speed;
+        Player.moveDirection = PlayerMoveDirection.Right;
+    }
+    if (Player.dx < 0 && Player.dy < 0) {
+        if (Player.dx < Player.dy) {
+            Player.moveDirection = PlayerMoveDirection.Left;
+        }
+    }
+    if (Player.dx > 0 && Player.dy > 0) {
+        if (Player.dx > Player.dy) {
+            Player.moveDirection = PlayerMoveDirection.Right;
+        }
+    }
+    // Aktualizacja klatek animacji
+    if (Player.dx !== 0 || Player.dy !== 0) {
+        Player.isWalking = true;
+        Player.animationCounter++;
+        if (Player.animationCounter >= Player.animationDelay) {
+            Player.frame = (Player.frame + 1) % Player.frameCount;
+            Player.animationCounter = 0;
+        }
+    } else {
+        Player.frame = 0; // Reset animacji, gdy gracz się nie porusza
+        Player.isWalking = false;
+    }
+    if (Keys.Space && Player.onGround) {
+        Player.velocityY = Player.jumpPower;
+        playSound(Assets.audio.jump);
+    }
+
+    Player.x += Player.dx;
+    Player.y += Player.dy;
+        Player.dx = 0;
+        Player.dy = 0;
+}
+function updatePlayerCoordinateByJoyStickOnPlatforms() {
+    if (Player.dx<0) {
+        Player.moveDirection = PlayerMoveDirection.Left;
+    }
+    if (Player.dx>0) {
+        Player.dx = Player.speed;
+        Player.moveDirection = PlayerMoveDirection.Right;
+    }
+    // Aktualizacja klatek animacji
+    if (Player.dx !== 0 || Player.dy !== 0) {
+        Player.isWalking = true;
+        Player.animationCounter++;
+        if (Player.animationCounter >= Player.animationDelay) {
+            Player.frame = (Player.frame + 1) % Player.frameCount;
+            Player.animationCounter = 0;
+        }
+    } else {
+        Player.frame = 0; // Reset animacji, gdy gracz się nie porusza
+        Player.isWalking = false;
+    }
+    if (Keys.Space && Player.onGround) {
+        Player.velocityY = Player.jumpPower;
+        playSound(Assets.audio.jump);
+    }
+
+    Player.x += Player.dx;
+}
 
 function preventPlayerLeaveCanvas() {
     const {gameFieldTop} = Game;
@@ -135,8 +210,8 @@ function preventPlayerLeaveCanvas() {
     }
 }
 
-function updateCanvasShift() {
-    const {level} = Game;
+export function updateCanvasShift() {
+    const {level, gameFieldTop} = Game;
     const cWidth = canvas.width;
     const cHeight = canvas.height;
     const halfCanvasWidth = (cWidth / 2);
@@ -145,7 +220,7 @@ function updateCanvasShift() {
     CanvasShift.y = 0;
     if (Player.y >= halfCanvasHeight) {
         CanvasShift.y = halfCanvasHeight - Player.y;
-        const maxCanvasShift = level.size.height - cHeight;
+        const maxCanvasShift = level.size.height - cHeight+gameFieldTop;
         if (CanvasShift.y <= -maxCanvasShift) {
             CanvasShift.y = -maxCanvasShift;
         }

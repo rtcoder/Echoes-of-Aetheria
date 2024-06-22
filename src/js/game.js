@@ -35,7 +35,7 @@ import {drawGame} from './draw.js';
 import {canvas, ctx} from './elements.js';
 import {loadNextLevel} from './level.js';
 import {setListeners} from './listeners.js';
-import {updatePlayerPosition} from './movement.js';
+import {updatePlayerPosition, updatePlayerPositionOnPlatforms} from './movement.js';
 import {playSound} from './sound.js';
 
 /**
@@ -57,6 +57,7 @@ export const PlayerMoveDirection = {
 
 /** @type {Game} */
 export const Game = {
+    isTouchDevice:false,
     level: null,
     currentLevel: null,
     isGameStarted: false,
@@ -102,8 +103,8 @@ function update() {
         return;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    updatePlayerPosition();
-    // updatePlayerPositionOnPlatforms()
+    // updatePlayerPosition();
+    updatePlayerPositionOnPlatforms()
     drawGame();
     const {sfx} = Game;
     if (Player.isWalking && Player.onGround) {

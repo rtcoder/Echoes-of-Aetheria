@@ -42,11 +42,19 @@ export function updatePlayerPositionOnPlatforms() {
     }
     Player.velocityY += gravity;
     Player.y += Player.velocityY;
+    let playerIsGoingToDie = false;
+    if (Player.velocityY > 30) {
+        playerIsGoingToDie = true;
+    }
 
     PlayerActionContext.onGround = false;
     level.walls.forEach(platform => {
         const collision = colCheck(Player, platform);
         if (collision) {
+            if (playerIsGoingToDie) {
+                console.log('die');
+                Player.lives--;
+            }
 
             const playerBottom = Player.y + Player.height;
             const platformTop = platform.y;
@@ -71,6 +79,9 @@ export function updatePlayerPositionOnPlatforms() {
             if (playerBottom <= platformBottom) {
                 // Gracz jest nad platformą i opada
                 if (Player.y < platformTop) {
+                    if (Player.velocityY > 1) {
+                        console.log(Player.velocityY);
+                    }
                     Player.velocityY = 0;
                     Player.y = platformTop - Player.height;
                     PlayerActionContext.onGround = true;
@@ -86,6 +97,12 @@ export function updatePlayerPositionOnPlatforms() {
                     Player.velocityX = 0;
                     return;
                 }
+            }
+            if (Player.y < platformTop && playerBottom >= platformBottom) {
+                Player.velocityY = 0;
+                Player.y = platformTop - Player.height;
+                PlayerActionContext.onGround = true;
+                return;
             }
             if (Player.y < platformBottom && Player.velocityY < 0) {
                 // Gracz uderza w platformę od dołu
@@ -167,10 +184,6 @@ function updatePlayerCoordinateByKeys() {
     } else {
         Player.frame = 0; // Reset animacji, gdy gracz się nie porusza
         PlayerActionContext.isWalking = false;
-    }
-    if (Keys.Space && PlayerActionContext.onGround) {
-        Player.velocityY = Player.jumpPower;
-        playSound(Assets.audio.jump);
     }
 
     Player.x += Player.dx;

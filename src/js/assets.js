@@ -2,8 +2,11 @@ export const Assets = {
     img: {
         heart_full: new Image(),
         heart_empty: new Image(),
-        bg:{
-            level_1:new Image()
+        bg: {
+            level_1_bg: new Image(),
+            level_1_clouds_bg: new Image(),
+            level_1_fg: new Image(),
+            level_2_bg: new Image(),
         },
         sword: {
             red: new Image(),

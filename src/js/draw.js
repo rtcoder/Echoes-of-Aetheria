@@ -1,8 +1,9 @@
 import {Assets} from './assets.js';
+import {drawBackground, drawForeground} from './draw/background.js';
 import {canvas, ctx} from './elements.js';
 import {CanvasShift, Game, Player, PlayerActionContext} from './game.js';
 
-export function drawPlayer() {
+function drawPlayer() {
     const {gameFieldTop} = Game;
     const spriteSheet = Assets.img.player.walk[PlayerActionContext.moveDirection];
     const sprite = spriteSheet[Player.frame];
@@ -15,32 +16,40 @@ export function drawPlayer() {
     );
 }
 
-export function drawWalls() {
-    ctx.fillStyle = '#808080';
+function drawWalls() {
     const {level, gameFieldTop} = Game;
-    level.walls.forEach(wall => {
-        ctx.fillRect(
-            wall.x + CanvasShift.x,
-            wall.y + CanvasShift.y + gameFieldTop,
-            wall.width,
-            wall.height,
-        );
-    });
+    level.walls
+        // .filter(w=>w.color)
+        .forEach(wall => {
+            ctx.fillStyle = wall.color || (wall.type === 'ceiling' ? '#000' : '#09c');
+            // ctx.fillStyle = wall.type==='ceiling'?'#000':'#09c';
+            ctx.fillRect(
+                wall.x + CanvasShift.x,
+                wall.y + CanvasShift.y + gameFieldTop,
+                wall.width,
+                wall.height,
+            );
+        });
 }
 
-export function drawBackground() {
-    ctx.fillStyle = '#808080';
+function drawCheckpoints() {
     const {level, gameFieldTop} = Game;
-    ctx.drawImage(
-        Assets.img.bg.level_1,
-        CanvasShift.x,
-        CanvasShift.y + gameFieldTop,
-        level.size.width,
-        level.size.height,
-    );
+    ctx.fillStyle = 'rgba(255,0,0,0.5)';
+    level.checkpoints
+        .filter(c => !c.visited)
+        .forEach(wall => {
+            ctx.fillRect(
+                wall.x + CanvasShift.x,
+                wall.y + CanvasShift.y + gameFieldTop,
+                wall.width,
+                wall.height,
+            );
+        });
 }
 
-export function drawLives() {
+
+
+function drawLives() {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, Game.gameFieldTop);
     const imgWidth = 40;
@@ -56,6 +65,8 @@ export function drawLives() {
 export function drawGame() {
     drawBackground();
     drawPlayer();
-    // drawWalls();
+    drawWalls();
+    drawForeground();
+    drawCheckpoints();
     drawLives();
 }

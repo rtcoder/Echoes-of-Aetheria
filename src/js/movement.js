@@ -34,10 +34,10 @@ export function updatePlayerPosition() {
 }
 
 export function updatePlayerPositionOnPlatforms() {
-    const { level, gravity } = Game;
-    if(Game.isTouchDevice){
+    const {level, gravity} = Game;
+    if (Game.isTouchDevice) {
         updatePlayerCoordinateByJoyStickOnPlatforms();
-    }else {
+    } else {
         updatePlayerCoordinateByKeysOnPlatforms();
     }
     Player.velocityY += gravity;
@@ -45,16 +45,64 @@ export function updatePlayerPositionOnPlatforms() {
 
     PlayerActionContext.onGround = false;
     level.walls.forEach(platform => {
-        if (Player.x < platform.x + platform.width &&
-            Player.x + Player.width > platform.x &&
-            Player.y < platform.y + platform.height &&
-            Player.y + Player.height > platform.y) {
-            // Sprawdzanie, czy platforma nie jest typem "sufit"
-            // if (platform.type !== 'ceiling') {
-                Player.velocityY = 0;
-                Player.y = platform.y - Player.height;
-                PlayerActionContext.onGround = true;
-            // }
+        const collision = colCheck(Player, platform);
+        if (collision) {
+
+            const playerBottom = Player.y + Player.height;
+            const platformTop = platform.y;
+            const platformBottom = platform.y + platform.height;
+            const playerRight = Player.x + Player.width;
+            const playerLeft = Player.x;
+            const platformRight = platform.x + platform.width;
+            const platformLeft = platform.x;
+            let hasCollisionLeftSide = false;
+            let hasCollisionRightSide = false;
+            // Sprawdzamy, czy gracz ma kolizję z platformą z prawej lub lewej strony
+            if (playerRight > platformLeft && playerLeft < platformRight) {
+                if (playerLeft < platformLeft) {
+                    // Kolizja z lewej strony platformy
+                    hasCollisionLeftSide = true;
+                } else if (playerRight > platformRight) {
+                    // Kolizja z prawej strony platformy
+                    hasCollisionRightSide = true;
+                }
+            }
+
+            if (playerBottom <= platformBottom) {
+                // Gracz jest nad platformą i opada
+                if (Player.y < platformTop) {
+                    Player.velocityY = 0;
+                    Player.y = platformTop - Player.height;
+                    PlayerActionContext.onGround = true;
+                    return;
+                }
+                if (hasCollisionLeftSide) {
+                    Player.x = platformLeft - Player.width;
+                    Player.velocityX = 0;
+                    return;
+                }
+                if (hasCollisionRightSide) {
+                    Player.x = platformRight;
+                    Player.velocityX = 0;
+                    return;
+                }
+            }
+            if (Player.y < platformBottom && Player.velocityY < 0) {
+                // Gracz uderza w platformę od dołu
+                if (platform.type === 'ceiling') {
+                    // Platforma typu "sufit" - gracz odbija się od niej
+                    Player.velocityY = -Player.velocityY;
+                    Player.y = platformBottom;
+                    console.log('cc');
+                } else {
+                    // Inny typ platformy - gracz normalnie wskakuje na nię
+                    Player.velocityY = 0;
+                    console.log('ddd');
+                    Player.y = platformTop - Player.height;
+                    PlayerActionContext.onGround = true;
+                }
+            }
+
         }
     });
 
@@ -68,6 +116,13 @@ export function updatePlayerPositionOnPlatforms() {
     preventPlayerLeaveCanvas();
 
     updateCanvasShift();
+}
+
+function colCheck(obj1, obj2) {
+    return obj1.x < obj2.x + obj2.width &&
+        obj1.x + obj1.width > obj2.x &&
+        obj1.y < obj2.y + obj2.height &&
+        obj1.y + obj1.height > obj2.y;
 }
 
 function updatePlayerCoordinateByKeys() {
@@ -123,6 +178,7 @@ function updatePlayerCoordinateByKeys() {
     Player.dx = 0;
     Player.dy = 0;
 }
+
 function updatePlayerCoordinateByKeysOnPlatforms() {
     if (Keys.ArrowLeft || Keys.KeyA) {
         Player.dx = -Player.speed;
@@ -161,14 +217,15 @@ function updatePlayerCoordinateByKeysOnPlatforms() {
 
     Player.x += Player.dx;
     Player.y += Player.dy;
-        Player.dx = 0;
-        Player.dy = 0;
+    Player.dx = 0;
+    Player.dy = 0;
 }
+
 function updatePlayerCoordinateByJoyStickOnPlatforms() {
-    if (Player.dx<0) {
+    if (Player.dx < 0) {
         PlayerActionContext.moveDirection = PlayerMoveDirection.Left;
     }
-    if (Player.dx>0) {
+    if (Player.dx > 0) {
         Player.dx = Player.speed;
         PlayerActionContext.moveDirection = PlayerMoveDirection.Right;
     }
@@ -220,7 +277,7 @@ export function updateCanvasShift() {
     CanvasShift.y = 0;
     if (Player.y >= halfCanvasHeight) {
         CanvasShift.y = halfCanvasHeight - Player.y;
-        const maxCanvasShift = level.size.height - cHeight+gameFieldTop;
+        const maxCanvasShift = level.size.height - cHeight + gameFieldTop;
         if (CanvasShift.y <= -maxCanvasShift) {
             CanvasShift.y = -maxCanvasShift;
         }

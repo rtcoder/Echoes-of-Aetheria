@@ -122,6 +122,7 @@ function update() {
 }
 
 export async function startGame() {
+    Game.isGameStarted = true;
     await loadNextLevel();
     setListeners();
     update();

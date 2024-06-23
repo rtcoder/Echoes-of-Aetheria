@@ -122,7 +122,6 @@ export function showMainMenu() {
                 case '_last_save_':
                     break;
                 case '_new_game_':
-                    Game.isGameStarted = true;
                     Game.showMainMenu = false;
                     startGame();
                     break;

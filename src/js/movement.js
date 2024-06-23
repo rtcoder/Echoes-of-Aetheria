@@ -34,7 +34,7 @@ export function updatePlayerPosition() {
 }
 
 export function updatePlayerPositionOnPlatforms() {
-    const {level, gravity} = Game;
+    const {level, gravity, lastCheckpoint} = Game;
     if (Game.isTouchDevice) {
         updatePlayerCoordinateByJoyStickOnPlatforms();
     } else {
@@ -42,18 +42,49 @@ export function updatePlayerPositionOnPlatforms() {
     }
     Player.velocityY += gravity;
     Player.y += Player.velocityY;
+    Player.x += Player.velocityX;
     let playerIsGoingToDie = false;
     if (Player.velocityY > 30) {
         playerIsGoingToDie = true;
     }
 
     PlayerActionContext.onGround = false;
-    level.walls.forEach(platform => {
+    level.checkpoints.filter(c => !c.visited)
+        .forEach((checkpoint, i) => {
+            const collision = colCheck(Player, checkpoint);
+            if (collision) {
+                lastCheckpoint.x = checkpoint.x + (checkpoint.width / 2);
+                lastCheckpoint.y = checkpoint.y + (checkpoint.height / 2);
+                level.checkpoints[i].visited = true;
+            }
+        });
+
+    level.walls.forEach((platform,indexPlatform) => {
         const collision = colCheck(Player, platform);
         if (collision) {
             if (playerIsGoingToDie) {
                 console.log('die');
                 Player.lives--;
+                if (Player.lives > 0) {
+                    if (lastCheckpoint.x > 0 && lastCheckpoint.y > 0) {
+                        Player.x = lastCheckpoint.x;
+                        Player.y = lastCheckpoint.y;
+                    } else {
+                        Player.x = level.startPoint.x;
+                        Player.y = level.startPoint.y;
+                    }
+                } else {
+                    Player.x = level.startPoint.x;
+                    Player.y = level.startPoint.y;
+                    Player.lives = Player.maxLives;
+                    level.checkpoints = level.checkpoints.map(c => ({
+                        ...c,
+                        visited: false,
+                    }));
+                }
+                Player.velocityY = 0;
+                playerIsGoingToDie = false;
+                return;
             }
 
             const playerBottom = Player.y + Player.height;
@@ -82,9 +113,16 @@ export function updatePlayerPositionOnPlatforms() {
                     if (Player.velocityY > 1) {
                         console.log(Player.velocityY);
                     }
-                    Player.velocityY = 0;
+                    if(platform.isMoving){
+                        Player.velocityY=platform.move.moveDirection.y
+                        Player.velocityX=platform.move.moveDirection.x
+                    }else {
+                        Player.velocityY = 0;
+                        Player.velocityX = 0;
+                    }
                     Player.y = platformTop - Player.height;
                     PlayerActionContext.onGround = true;
+                    Player.currentPlatformIndex=indexPlatform
                     return;
                 }
                 if (hasCollisionLeftSide) {
@@ -305,3 +343,4 @@ export function updateCanvasShift() {
         }
     }
 }
+

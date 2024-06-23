@@ -1,4 +1,4 @@
 export function playSound(sound) {
-    const a = sound.cloneNode();
-    a.play();
+    // const a = sound.cloneNode();
+    // a.play();
 }

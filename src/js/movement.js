@@ -60,34 +60,18 @@ export function updatePlayerPositionOnPlatforms() {
             }
         });
 
-    level.walls.forEach((platform,indexPlatform) => {
+    level.walls.forEach((platform, indexPlatform) => {
         const collision = colCheck(Player, platform);
         if (collision) {
             if (playerIsGoingToDie) {
-                console.log('die');
-                Player.lives--;
-                if (Player.lives > 0) {
-                    if (lastCheckpoint.x > 0 && lastCheckpoint.y > 0) {
-                        Player.x = lastCheckpoint.x;
-                        Player.y = lastCheckpoint.y;
-                    } else {
-                        Player.x = level.startPoint.x;
-                        Player.y = level.startPoint.y;
-                    }
-                } else {
-                    Player.x = level.startPoint.x;
-                    Player.y = level.startPoint.y;
-                    Player.lives = Player.maxLives;
-                    level.checkpoints = level.checkpoints.map(c => ({
-                        ...c,
-                        visited: false,
-                    }));
-                }
-                Player.velocityY = 0;
+                removeLive();
                 playerIsGoingToDie = false;
                 return;
             }
-
+            if (platform.type === 'danger') {
+                removeLive();
+                return;
+            }
             const playerBottom = Player.y + Player.height;
             const platformTop = platform.y;
             const platformBottom = platform.y + platform.height;
@@ -114,16 +98,16 @@ export function updatePlayerPositionOnPlatforms() {
                     if (Player.velocityY > 1) {
                         console.log(Player.velocityY);
                     }
-                    if(platform.isMoving){
-                        Player.velocityY=platform.move.moveDirection.y
-                        Player.velocityX=platform.move.moveDirection.x
-                    }else {
+                    if (platform.isMoving) {
+                        Player.velocityY = platform.move.moveDirection.y;
+                        Player.velocityX = platform.move.moveDirection.x;
+                    } else {
                         Player.velocityY = 0;
                         Player.velocityX = 0;
                     }
                     Player.y = platformTop - Player.height;
                     PlayerActionContext.onGround = true;
-                    Player.currentPlatformIndex=indexPlatform
+                    Player.currentPlatformIndex = indexPlatform;
                     return;
                 }
                 if (hasCollisionLeftSide) {

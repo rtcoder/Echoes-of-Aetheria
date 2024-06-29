@@ -60,6 +60,14 @@ export const Assets = {
                 },
             },
         },
+        fire_flame: {
+            0: new Image(),
+            1: new Image(),
+            2: new Image(),
+            3: new Image(),
+            4: new Image(),
+            5: new Image(),
+        },
     },
     audio: {
         step: new Audio(),

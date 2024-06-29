@@ -1,7 +1,8 @@
 import {Assets} from './assets.js';
 import {drawBackground, drawForeground} from './draw/background.js';
 import {canvas, ctx} from './elements.js';
-import {CanvasShift, Game, Player, PlayerActionContext} from './game.js';
+import {CanvasShift, Game} from './game.js';
+import {Player, PlayerActionContext} from './Player.js';
 
 function drawPlayer() {
     const {gameFieldTop} = Game;

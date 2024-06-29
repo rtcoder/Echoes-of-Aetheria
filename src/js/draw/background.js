@@ -1,6 +1,7 @@
 import {Assets} from '../assets.js';
 import {ctx} from '../elements.js';
-import {CanvasShift, Game, Player} from '../game.js';
+import {CanvasShift, Game} from '../game.js';
+import {Player} from '../Player.js';
 
 export function drawBackground() {
     const {level, gameFieldTop} = Game;

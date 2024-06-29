@@ -1,4 +1,5 @@
-import {Game, Player} from './game.js';
+import {Game} from './game.js';
+import {Player} from './Player.js';
 import {updateCanvasShift} from './movement.js';
 
  async function loadLevel(number) {

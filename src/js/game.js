@@ -64,6 +64,7 @@ import {setListeners} from './listeners.js';
 import {updatePlayerPositionOnPlatforms} from './movement.js';
 import {moveBackgroundAndForeground} from './movement/backgrounds.js';
 import {movePlatforms} from './movement/platforms.js';
+import {PlayerActionContext} from './Player.js';
 import {playSound} from './sound.js';
 
 /**
@@ -75,13 +76,6 @@ import {playSound} from './sound.js';
  * @property {number} gameFieldTop - Pozycja górnej granicy pola gry.
  * @property {number} gravity - Siła grawitacji.
  */
-
-export const PlayerMoveDirection = {
-    Up: 'up',
-    Down: 'down',
-    Left: 'left',
-    Right: 'right',
-};
 
 /** @type {Game} */
 export const Game = {
@@ -104,29 +98,6 @@ export const Game = {
 export const CanvasShift = {
     x: 0,
     y: 0,
-};
-export const Player = {
-    width: 30,
-    height: 50,
-    x: 0,
-    y: 0,
-    speed: 5,
-    lives: 5,
-    maxLives: 5,
-    dx: 0,
-    dy: 0,
-    velocityY: 0,
-    velocityX: 0,
-    jumpPower: -10,
-    frame: 0,
-    frameCount: 9, // Liczba klatek w animacji
-    animationDelay: 5, // Liczba klatek czasu między przełączeniem sprite'a
-    animationCounter: 0,
-};
-export const PlayerActionContext = {
-    moveDirection: PlayerMoveDirection.Down,
-    onGround: false,
-    isWalking: false,
 };
 
 export function saveGameToLocalStorage() {

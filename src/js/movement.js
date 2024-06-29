@@ -1,8 +1,9 @@
 import {Assets} from './assets.js';
 import {detectCollision} from './collisions.js';
 import {canvas} from './elements.js';
-import {CanvasShift, Game, Player, PlayerActionContext, PlayerMoveDirection} from './game.js';
+import {CanvasShift, Game} from './game.js';
 import {Keys} from './keys.js';
+import {Player, PlayerActionContext, PlayerMoveDirection, removeLive} from './Player.js';
 import {playSound} from './sound.js';
 
 export function updatePlayerPosition() {

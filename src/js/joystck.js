@@ -1,5 +1,5 @@
 import {joystick, joystickHandle} from './elements.js';
-import {Game, Player} from './game.js';
+import {Player} from './Player.js';
 
 let joystickActive = false;
 let joystickStartX, joystickStartY;

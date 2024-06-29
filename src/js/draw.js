@@ -22,14 +22,35 @@ function drawWalls() {
     level.walls
         // .filter(w=>w.color)
         .forEach(wall => {
-            ctx.fillStyle = wall.color || (wall.type === 'ceiling' ? '#000' : '#09c');
-            // ctx.fillStyle = wall.type==='ceiling'?'#000':'#09c';
-            ctx.fillRect(
-                wall.x + CanvasShift.x,
-                wall.y + CanvasShift.y + gameFieldTop,
-                wall.width,
-                wall.height,
-            );
+            if (wall.gif) {
+                const gif = Assets.img[wall.gif];
+                if (wall.frameDelay) {
+                    const now = performance.now();
+                    if (now - wall.lastFrameTime >= wall.frameDelay) {
+                        wall.frameIndex = (wall.frameIndex + 1) % Object.keys(gif).length;
+                        wall.lastFrameTime = now;
+                        console.log(wall.frameIndex);
+                    }
+                } else {
+                    wall.frameIndex = (wall.frameIndex + 1) % Object.keys(gif).length;
+                }
+                ctx.drawImage(
+                    gif[wall.frameIndex],
+                    wall.x + CanvasShift.x,
+                    wall.y + CanvasShift.y + gameFieldTop,
+                    wall.width,
+                    wall.height,
+                );
+            } else {
+                ctx.fillStyle = wall.color || (wall.type === 'ceiling' ? '#000' : '#09c');
+                // ctx.fillStyle = wall.type==='ceiling'?'#000':'#09c';
+                ctx.fillRect(
+                    wall.x + CanvasShift.x,
+                    wall.y + CanvasShift.y + gameFieldTop,
+                    wall.width,
+                    wall.height,
+                );
+            }
         });
 }
 
@@ -47,7 +68,6 @@ function drawCheckpoints() {
             );
         });
 }
-
 
 
 function drawLives() {

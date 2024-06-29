@@ -34,6 +34,10 @@
  * @property {Point} move.to
  * @property {Point} move.moveDirectiond
  * @property {string|undefined} color
+ * @property {string|undefined} gif
+ * @property {number|undefined} frameIndex
+ * @property {number|undefined} frameDelay
+ * @property {number|undefined} lastFrameTime
  */
 /**
  * Reprezentuje punkt w przestrzeni 2D.
@@ -125,7 +129,9 @@ function update() {
     } else {
         sfx.walkAudioCounter = sfx.walkAudioDelay - 1;
     }
-    requestAnimationFrame(update);
+    setTimeout(()=>{
+        requestAnimationFrame(update);
+    },10)
 }
 
 export async function startGame() {

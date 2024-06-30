@@ -1,4 +1,4 @@
-import {Game} from './game';
+import {Game} from './game.js';
 
 export const PlayerMoveDirection = {
     Up: 'up',
@@ -6,6 +6,7 @@ export const PlayerMoveDirection = {
     Left: 'left',
     Right: 'right',
 };
+
 export const Player = {
     width: 30,
     height: 50,
@@ -19,17 +20,20 @@ export const Player = {
     velocityY: 0,
     velocityX: 0,
     jumpPower: -10,
-    frame: 0,
-    frameCount: 9, // Liczba klatek w animacji
-    animationDelay: 5, // Liczba klatek czasu między przełączeniem sprite'a
-    animationCounter: 0,
 };
+
 export const PlayerActionContext = {
     moveDirection: PlayerMoveDirection.Down,
     onGround: false,
     isWalking: false,
 };
 
+export const PlayerAnimation = {
+    frame: 0,
+    frameCount: 9,
+    animationDelay: 5,
+    animationCounter: 0,
+};
 
 export function removeLive() {
     const {level, lastCheckpoint} = Game;

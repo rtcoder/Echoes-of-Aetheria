@@ -3,12 +3,12 @@ import {drawBackground, drawForeground} from './draw/background.js';
 import {drawWalls} from './draw/wall.js';
 import {canvas, ctx} from './elements.js';
 import {CanvasShift, Game} from './game.js';
-import {Player, PlayerActionContext} from './Player.js';
+import {Player, PlayerActionContext, PlayerAnimation} from './Player.js';
 
 function drawPlayer() {
     const {gameFieldTop} = Game;
     const spriteSheet = Assets.img.player.walk[PlayerActionContext.moveDirection];
-    const sprite = spriteSheet[Player.frame];
+    const sprite = spriteSheet[PlayerAnimation.frame];
     ctx.drawImage(
         sprite,
         Player.x + CanvasShift.x,

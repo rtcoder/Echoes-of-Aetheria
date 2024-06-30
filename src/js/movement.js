@@ -3,7 +3,7 @@ import {detectCollision} from './collisions.js';
 import {canvas} from './elements.js';
 import {CanvasShift, Game} from './game.js';
 import {Keys} from './keys.js';
-import {Player, PlayerActionContext, PlayerMoveDirection, removeLive} from './Player.js';
+import {Player, PlayerActionContext, PlayerAnimation, PlayerMoveDirection, removeLive} from './Player.js';
 import {playSound} from './sound.js';
 
 export function updatePlayerPosition() {
@@ -199,13 +199,13 @@ function updatePlayerCoordinateByKeys() {
     // Aktualizacja klatek animacji
     if (Player.dx !== 0 || Player.dy !== 0) {
         PlayerActionContext.isWalking = true;
-        Player.animationCounter++;
-        if (Player.animationCounter >= Player.animationDelay) {
-            Player.frame = (Player.frame + 1) % Player.frameCount;
-            Player.animationCounter = 0;
+        PlayerAnimation.animationCounter++;
+        if (PlayerAnimation.animationCounter >= PlayerAnimation.animationDelay) {
+            PlayerAnimation.frame = (PlayerAnimation.frame + 1) % PlayerAnimation.frameCount;
+            PlayerAnimation.animationCounter = 0;
         }
     } else {
-        Player.frame = 0; // Reset animacji, gdy gracz się nie porusza
+        PlayerAnimation.frame = 0; // Reset animacji, gdy gracz się nie porusza
         PlayerActionContext.isWalking = false;
     }
 
@@ -237,13 +237,13 @@ function updatePlayerCoordinateByKeysOnPlatforms() {
     // Aktualizacja klatek animacji
     if (Player.dx !== 0 || Player.dy !== 0) {
         PlayerActionContext.isWalking = true;
-        Player.animationCounter++;
-        if (Player.animationCounter >= Player.animationDelay) {
-            Player.frame = (Player.frame + 1) % Player.frameCount;
-            Player.animationCounter = 0;
+        PlayerAnimation.animationCounter++;
+        if (PlayerAnimation.animationCounter >= PlayerAnimation.animationDelay) {
+            PlayerAnimation.frame = (PlayerAnimation.frame + 1) % PlayerAnimation.frameCount;
+            PlayerAnimation.animationCounter = 0;
         }
     } else {
-        Player.frame = 0; // Reset animacji, gdy gracz się nie porusza
+        PlayerAnimation.frame = 0; // Reset animacji, gdy gracz się nie porusza
         PlayerActionContext.isWalking = false;
     }
     if (Keys.Space && PlayerActionContext.onGround) {
@@ -268,13 +268,13 @@ function updatePlayerCoordinateByJoyStickOnPlatforms() {
     // Aktualizacja klatek animacji
     if (Player.dx !== 0 || Player.dy !== 0) {
         PlayerActionContext.isWalking = true;
-        Player.animationCounter++;
-        if (Player.animationCounter >= Player.animationDelay) {
-            Player.frame = (Player.frame + 1) % Player.frameCount;
-            Player.animationCounter = 0;
+        PlayerAnimation.animationCounter++;
+        if (PlayerAnimation.animationCounter >= PlayerAnimation.animationDelay) {
+            PlayerAnimation.frame = (PlayerAnimation.frame + 1) % PlayerAnimation.frameCount;
+            PlayerAnimation.animationCounter = 0;
         }
     } else {
-        Player.frame = 0; // Reset animacji, gdy gracz się nie porusza
+        PlayerAnimation.frame = 0; // Reset animacji, gdy gracz się nie porusza
         PlayerActionContext.isWalking = false;
     }
     if (Keys.Space && PlayerActionContext.onGround) {

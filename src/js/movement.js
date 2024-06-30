@@ -3,6 +3,7 @@ import {detectCollision} from './collisions.js';
 import {canvas} from './elements.js';
 import {CanvasShift, Game} from './game.js';
 import {Keys} from './keys.js';
+import {platformOnTouch} from './platform-events.js';
 import {Player, PlayerActionContext, PlayerAnimation, PlayerMoveDirection, removeLive} from './Player.js';
 import {playSound} from './sound.js';
 
@@ -71,6 +72,9 @@ export function updatePlayerPositionOnPlatforms() {
             if (platform.type === 'danger') {
                 removeLive();
                 return;
+            }
+            if(platform.onTouch){
+                platformOnTouch(platform)
             }
             const playerBottom = Player.y + Player.height;
             const platformTop = platform.y;

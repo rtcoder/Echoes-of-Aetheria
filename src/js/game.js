@@ -21,12 +21,17 @@
  * @property {Point} paralax
  */
 /**
+ * @typedef {Object} OnTouchDefinition
+ * @property {string|undefined} remove
+ */
+/**
  * Reprezentuje ścianę na poziomie gry.
  * @typedef {Object} Wall
  * @property {number} x
  * @property {number} y
  * @property {number} width
  * @property {number} height
+ * @property {string} id
  * @property {string} type
  * @property {boolean} isMoving
  * @property {Object} move
@@ -38,6 +43,8 @@
  * @property {number|undefined} frameIndex
  * @property {number|undefined} frameDelay
  * @property {number|undefined} lastFrameTime
+ * @property {"repeat-x"|"repeat-y"|"repeat"|undefined} repeat
+ * @property {OnTouchDefinition|undefined} onTouch
  */
 /**
  * Reprezentuje punkt w przestrzeni 2D.

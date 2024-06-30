@@ -5,6 +5,20 @@ export function resize() {
     canvas.height = window.innerHeight;
 }
 
+export function randomStr(length) {
+    let result = '';
+    const chars = 'abcdefghijklmnopqrstuvwxyz';
+    const digits = '0123456789';
+    const characters = chars + chars.toUpperCase() + digits;
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        counter += 1;
+    }
+    return result;
+}
+
 export function drawWrappedText(
     text,
     x,
@@ -61,6 +75,7 @@ export function drawWrappedText(
         }
     }
 }
+
 export function isTouchDevice() {
     return (('ontouchstart' in window) ||
         (navigator.maxTouchPoints > 0) ||

@@ -1,72 +1,3 @@
-/**
- * Reprezentuje punkt w przestrzeni 2D.
- * @typedef {Object} Point
- * @property {number} x
- * @property {number} y
- */
-
-/**
- * Reprezentuje rozmiar prostokąta.
- * @typedef {Object} Size
- * @property {number} width
- * @property {number} height
- */
-
-/**
- * Reprezentuje ścianę na poziomie gry.
- * @typedef {Object} Background
- * @property {string} img
- * @property {Point} position
- * @property {Point} move
- * @property {Point} paralax
- */
-/**
- * @typedef {Object} OnTouchDefinition
- * @property {string|undefined} remove
- */
-/**
- * Reprezentuje ścianę na poziomie gry.
- * @typedef {Object} Wall
- * @property {number} x
- * @property {number} y
- * @property {number} width
- * @property {number} height
- * @property {string} id
- * @property {string} type
- * @property {boolean} isMoving
- * @property {Object} move
- * @property {Point} move.from
- * @property {Point} move.to
- * @property {Point} move.moveDirectiond
- * @property {string|undefined} color
- * @property {string|undefined} gif
- * @property {number|undefined} frameIndex
- * @property {number|undefined} frameDelay
- * @property {number|undefined} lastFrameTime
- * @property {"repeat-x"|"repeat-y"|"repeat"|undefined} repeat
- * @property {OnTouchDefinition|undefined} onTouch
- */
-/**
- * Reprezentuje punkt w przestrzeni 2D.
- * @typedef {Object} Checkpoint
- * @property {number} x
- * @property {number} y
- * @property {number} width
- * @property {number} height
- * @property {boolean} visited
- */
-/**
- * Reprezentuje poziom gry.
- * @typedef {Object} Level
- * @property {string} name
- * @property {Point} startPoint
- * @property {Size} size
- * @property {Background[]} backgrounds
- * @property {Background[]} foregrounds
- * @property {Wall[]} walls
- * @property {Checkpoint[]} checkpoints
- */
-
 import {Assets} from './assets.js';
 import {drawGame} from './draw.js';
 import {canvas, ctx} from './elements.js';
@@ -78,17 +9,7 @@ import {movePlatforms} from './movement/platforms.js';
 import {PlayerActionContext} from './Player.js';
 import {playSound} from './sound.js';
 
-/**
- * Reprezentuje główny obiekt gry.
- * @typedef {Object} Game
- * @property {Level|null} level - Aktualny poziom gry.
- * @property {number|null} currentLevel - Aktualny poziom gry.
- * @property {boolean} isGameStarted
- * @property {number} gameFieldTop - Pozycja górnej granicy pola gry.
- * @property {number} gravity - Siła grawitacji.
- */
-
-/** @type {Game} */
+/** @type {GameType} */
 export const Game = {
     isTouchDevice: false,
     level: null,

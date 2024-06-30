@@ -4,7 +4,7 @@ import {canvas} from './elements.js';
 import {CanvasShift, Game} from './game.js';
 import {Keys} from './keys.js';
 import {platformOnTouch} from './platform-events.js';
-import {Player, PlayerActionContext, PlayerAnimation, PlayerMoveDirection, removeLive} from './Player.js';
+import {Player, PlayerActionContext, PlayerAnimation, PlayerMoveDirection} from './Player.js';
 import {playSound} from './sound.js';
 
 export function updatePlayerPosition() {
@@ -65,16 +65,16 @@ export function updatePlayerPositionOnPlatforms() {
         const collision = colCheck(Player, platform);
         if (collision) {
             if (playerIsGoingToDie) {
-                removeLive();
+                Player.removeLive();
                 playerIsGoingToDie = false;
                 return;
             }
             if (platform.type === 'danger') {
-                removeLive();
+                Player.removeLive();
                 return;
             }
-            if(platform.onTouch){
-                platformOnTouch(platform)
+            if (platform.onTouch) {
+                platformOnTouch(platform);
             }
             const playerBottom = Player.y + Player.height;
             const platformTop = platform.y;

@@ -7,9 +7,10 @@ async function loadLevel(number) {
     /**
      * @type {Level}
      */
-    const level = await fetch(`./src/json/levels/level_${number}.json`).then(res => res.json());
-    Player.x = level.startPoint.x;
-    Player.y = level.startPoint.y;
+    const level = await fetch(`./src/json/levels/level_${number}.json`)
+        .then(res => res.json());
+
+    Player.setStartPosition(level);
     level.walls = level.walls.map(wall => {
         if (!wall.id) {
             wall.id = randomStr(10);

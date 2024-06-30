@@ -1,5 +1,6 @@
 import {Assets} from './assets.js';
 import {drawBackground, drawForeground} from './draw/background.js';
+import {drawWalls} from './draw/wall.js';
 import {canvas, ctx} from './elements.js';
 import {CanvasShift, Game} from './game.js';
 import {Player, PlayerActionContext} from './Player.js';
@@ -15,43 +16,6 @@ function drawPlayer() {
         sprite.width,
         sprite.height,
     );
-}
-
-function drawWalls() {
-    const {level, gameFieldTop} = Game;
-    level.walls
-        // .filter(w=>w.color)
-        .forEach(wall => {
-            if (wall.gif) {
-                const gif = Assets.img[wall.gif];
-                if (wall.frameDelay) {
-                    const now = performance.now();
-                    if (now - wall.lastFrameTime >= wall.frameDelay) {
-                        wall.frameIndex = (wall.frameIndex + 1) % Object.keys(gif).length;
-                        wall.lastFrameTime = now;
-                        console.log(wall.frameIndex);
-                    }
-                } else {
-                    wall.frameIndex = (wall.frameIndex + 1) % Object.keys(gif).length;
-                }
-                ctx.drawImage(
-                    gif[wall.frameIndex],
-                    wall.x + CanvasShift.x,
-                    wall.y + CanvasShift.y + gameFieldTop,
-                    wall.width,
-                    wall.height,
-                );
-            } else {
-                ctx.fillStyle = wall.color || (wall.type === 'ceiling' ? '#000' : '#09c');
-                // ctx.fillStyle = wall.type==='ceiling'?'#000':'#09c';
-                ctx.fillRect(
-                    wall.x + CanvasShift.x,
-                    wall.y + CanvasShift.y + gameFieldTop,
-                    wall.width,
-                    wall.height,
-                );
-            }
-        });
 }
 
 function drawCheckpoints() {
